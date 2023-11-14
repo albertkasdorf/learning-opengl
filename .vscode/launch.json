@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "OSX: Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
             "name": "Windows: Launch",
             "type": "cppvsdbg",
             "request": "launch",
@@ -14,6 +26,7 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "externalTerminal"
-        }
+        },
+
     ]
 }
