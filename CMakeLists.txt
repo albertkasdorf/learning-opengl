@@ -4,7 +4,7 @@ cmake_minimum_required(
 project(
     learn-opengl
     VERSION 1.0
-    LANGUAGES CXX
+    LANGUAGES C CXX
 )
 add_subdirectory(
     external
