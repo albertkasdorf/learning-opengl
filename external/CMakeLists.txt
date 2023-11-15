@@ -1,0 +1,12 @@
+include(
+    FetchContent
+)
+add_subdirectory(
+    glad
+)
+add_subdirectory(
+    glfw
+)
+FetchContent_MakeAvailable(
+    GLFW
+)

@@ -1,4 +1,9 @@
 {
     // Configure CMake Tools settings, https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/cmake-settings.md
-    "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitTargetOs}-${buildKitTargetArch}-${buildType}"
+    "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitTargetOs}-${buildKitTargetArch}-${buildType}",
+    "cSpell.ignoreWords": [
+        "glfw",
+        "opengl",
+        "GLADloadproc"
+    ],
 }
