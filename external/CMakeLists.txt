@@ -1,12 +1,10 @@
-include(
-    FetchContent
-)
-add_subdirectory(
-    glad
-)
-add_subdirectory(
-    glfw
-)
+include(FetchContent)
+
+add_subdirectory(glad)
+add_subdirectory(glfw)
+add_subdirectory(glm)
+
 FetchContent_MakeAvailable(
     GLFW
+    glm
 )

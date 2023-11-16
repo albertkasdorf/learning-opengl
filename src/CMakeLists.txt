@@ -26,5 +26,7 @@ target_compile_features(
 target_link_libraries(
     ${TARGET_NAME}
     PRIVATE
-        glfw glad::glad
+        glfw
+        glad::glad
+        glm::glm
 )
