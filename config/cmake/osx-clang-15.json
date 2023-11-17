@@ -14,7 +14,7 @@
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
-                "rhs": "osx"
+                "rhs": "Darwin"
             },
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "clang",

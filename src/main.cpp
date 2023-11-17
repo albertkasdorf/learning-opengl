@@ -113,7 +113,11 @@ auto main(int argc, char** argv) -> int
         }
 
         // Configure GLFW
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+#else
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#endif
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -135,8 +139,10 @@ auto main(int argc, char** argv) -> int
         }
 
         // Enable OpenGL debug output
+#ifndef __APPLE__
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(&debugCallback, 0);
+#endif
 
         // Set viewport size and register resize callback
         // glViewport(0, 0, k_screenWidth, k_screenHeight);
