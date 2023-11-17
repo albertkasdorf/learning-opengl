@@ -1,5 +1,5 @@
 FetchContent_Declare(
-    GLFW
+    glfw
     GIT_REPOSITORY https://github.com/glfw/glfw.git
     GIT_TAG        7482de6071d21db77a7236155da44c172a7f6c9e # Tag 3.3.8
 )

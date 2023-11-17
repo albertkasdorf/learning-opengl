@@ -1,0 +1,37 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 26,
+        "patch": 4
+    },
+    "configurePresets": [
+        {
+            "name": "osx-clang-15",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "osx"
+            },
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "osx-clang-15-Debug",
+            "configurePreset": "osx-clang-15",
+            "configuration": "Debug"
+        },
+        {
+            "name": "osx-clang-15-Release",
+            "configurePreset": "osx-clang-15",
+            "configuration": "Release"
+        }
+    ]
+}

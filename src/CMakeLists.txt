@@ -29,4 +29,5 @@ target_link_libraries(
         glfw
         glad::glad
         glm::glm
+        fmt::fmt
 )

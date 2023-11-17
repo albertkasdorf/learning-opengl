@@ -1,0 +1,12 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 26,
+        "patch": 4
+    },
+    "include": [
+        "config/cmake/win32-msvc-2022.json",
+        "config/cmake/osx-clang-15.json"
+    ]
+}
