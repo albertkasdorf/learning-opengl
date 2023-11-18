@@ -30,4 +30,5 @@ target_link_libraries(
         glad::glad
         glm::glm
         fmt::fmt
+        spdlog::spdlog
 )

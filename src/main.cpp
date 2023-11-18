@@ -4,6 +4,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "fmt/core.h"
+#include "spdlog/spdlog.h"
 
 #include <iostream>
 #include <array>
