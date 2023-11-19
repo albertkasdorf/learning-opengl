@@ -5,7 +5,7 @@ FetchContent_Declare(
 )
 
 #set(SPDLOG_FMT_EXTERNAL ON CACHE INTERNAL "")
-#set(SPDLOG_FMT_EXTERNAL_HO ON CACHE INTERNAL "")
+set(SPDLOG_FMT_EXTERNAL_HO ON CACHE INTERNAL "")
 
 # project(spdlog VERSION ${SPDLOG_VERSION} LANGUAGES CXX)
 # add_library(spdlog::spdlog ALIAS spdlog)
