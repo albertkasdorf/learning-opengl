@@ -1,3 +1,5 @@
+/// @file
+
 #define GLAD_GL_IMPLEMENTATION
 #include "glad/glad.h"
 #define GLFW_INCLUDE_NONE
@@ -17,13 +19,17 @@
 unsigned int const k_screenWidth{800};
 unsigned int const k_screenHeight{600};
 
-// Function called when the window is resized
+/// \brief Function called when the window is resized
+/// @param window Window handle
+/// @param width Window width
+/// @param height Window height
+/// @return Nothing
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-// Function to process input (e.g., escape key to close the window)
+/// @brief Function to process input (e.g., escape key to close the window)
 void processInput(GLFWwindow* window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
