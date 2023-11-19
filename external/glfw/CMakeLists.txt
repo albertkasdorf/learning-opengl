@@ -7,3 +7,7 @@ FetchContent_Declare(
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "")
 set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "")
 set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "")
+
+# project(GLFW VERSION 3.4.0 LANGUAGES C)
+# GLFW_LIBRARY_TYPE = static or shared
+# add_library(glfw ${GLFW_LIBRARY_TYPE} ...)

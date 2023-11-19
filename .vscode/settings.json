@@ -3,11 +3,13 @@
     "cmake.debugConfig": {
         "cwd": "${workspaceFolder}" // Project setting
     },
-    "cmake.buildBeforeRun": true, // user setting
-    "cmake.configureOnEdit": true, // user setting
+    "cmake.buildBeforeRun": true, // User setting
+    "cmake.configureOnEdit": true, // User setting
+    // "cmake.loggingLevel": "trace", // Project setting
     "cSpell.ignoreWords": [ // Project setting
         "glfw",
         "opengl",
-        "GLADloadproc"
+        "GLADloadproc",
+        "toolset"
     ],
 }

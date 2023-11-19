@@ -1,10 +1,5 @@
 {
     "version": 4,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 26,
-        "patch": 4
-    },
     "configurePresets": [
         {
             "name": "osx-clang-15",

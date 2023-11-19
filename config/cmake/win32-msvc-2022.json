@@ -1,10 +1,5 @@
 {
     "version": 4,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 26,
-        "patch": 4
-    },
     "configurePresets": [
         {
             "name": "win32-msvc-2022",
@@ -17,6 +12,7 @@
             },
             "generator": "Visual Studio 17 2022",
             "architecture": "x64",
+            "toolset": "v143,host=x64",
             "cacheVariables": {}
         }
     ],

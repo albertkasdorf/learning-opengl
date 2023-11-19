@@ -12,7 +12,7 @@ set_target_properties(
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS NO
 )
-if(WIN32)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 # Suppress MSVC linker warning "LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library"
 set_target_properties(
     ${TARGET_NAME}
