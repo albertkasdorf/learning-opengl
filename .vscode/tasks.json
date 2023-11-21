@@ -1,0 +1,61 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            //
+            // Launching a website via windows commandline
+            //      https://stackoverflow.com/questions/3739327/launching-a-website-via-windows-commandline
+            // Configure CMake Tools settings
+            //      https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/cmake-settings.md
+            //
+            "label": "Open Doxygen documentation",
+            "type": "process",
+            "command": "rundll32.exe",
+            "args": [
+                "url.dll,FileProtocolHandler",
+                "${command:cmake.buildDirectory}/docs/html/index.html"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "close": false,
+            },
+            "dependsOn": [
+                "Build Doxygen documentation"
+            ]
+        },
+        {
+            //
+            // CMake - Build a Project
+            // https://cmake.org/cmake/help/latest/manual/cmake.1.html#build-a-project
+            //
+            "label": "Build Doxygen documentation",
+            "type": "process",
+            "command": "C:/Program Files/CMake/bin/cmake.exe",
+            "args": [
+                "--build",
+                "--preset",
+                "${command:cmake.activeBuildPresetName}",
+                "--target",
+                "doxygen"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "close": false,
+            }
+        }
+    ]
+}

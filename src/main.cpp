@@ -1,25 +1,25 @@
 /// ----------------------------------------------------------------------------
 /// MIT License
 ///
-/// Copyright (c) 2023 Albert Kasdorf
+/// @copyright Copyright (c) 2023 Albert Kasdorf
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
+/// of this software and associated documentation files (the "Software"), to
+/// deal in the Software without restriction, including without limitation the
+/// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+/// sell copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
 ///
-/// The above copyright notice and this permission notice shall be included in all
-/// copies or substantial portions of the Software.
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
 ///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 /// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-/// SOFTWARE.
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+/// IN THE SOFTWARE.
 /// ----------------------------------------------------------------------------
 /// @file
 /// @author albert.kasdorf@live.de
@@ -41,20 +41,24 @@
 #include <iterator>
 
 // Window dimensions
+
+/// @brief Width of the window
 unsigned int const k_screenWidth{800};
+
+/// @brief Height of the window
 unsigned int const k_screenHeight{600};
 
-/// \brief Function called when the window is resized
+/// @brief Function called when the window is resized
 /// @param window Window handle
 /// @param width Window width
 /// @param height Window height
-/// @return Nothing
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
 /// @brief Function to process input (e.g., escape key to close the window)
+/// @param window 
 void processInput(GLFWwindow* window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -63,7 +67,15 @@ void processInput(GLFWwindow* window)
     }
 }
 
-// OpenGL debug callback function
+/// @brief OpenGL debug callback function
+/// @param source 
+/// @param type 
+/// @param id 
+/// @param severity 
+/// @param length 
+/// @param message 
+/// @param userParam 
+/// @return 
 void GLAPIENTRY debugCallback(
     GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
     GLchar const * message, void const * userParam)
@@ -73,6 +85,10 @@ void GLAPIENTRY debugCallback(
     throw std::runtime_error(message);
 }
 
+/// @brief
+/// @param type
+/// @param source
+/// @return
 GLuint compileShader(GLenum type, std::string const & source)
 {
     GLuint const   shaderId{glCreateShader(type)};
@@ -95,6 +111,10 @@ GLuint compileShader(GLenum type, std::string const & source)
     return shaderId;
 }
 
+/// @brief 
+/// @param vertexShader 
+/// @param fragmentShader 
+/// @return 
 GLuint createShader(
     std::string const & vertexShader, std::string const & fragmentShader)
 {
@@ -113,6 +133,10 @@ GLuint createShader(
     return programId;
 }
 
+/// @brief 
+/// @param vertexShaderPath 
+/// @param fragmentShaderPath 
+/// @return 
 GLuint createShader(
     std::filesystem::path const & vertexShaderPath,
     std::filesystem::path const & fragmentShaderPath)
@@ -130,6 +154,10 @@ GLuint createShader(
     return createShader(vertexShader, fragmentShader);
 }
 
+/// @brief 
+/// @param argc 
+/// @param argv 
+/// @return 
 auto main(int argc, char** argv) -> int
 {
     int glfwIsInitialized{GLFW_FALSE};
