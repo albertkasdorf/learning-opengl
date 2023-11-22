@@ -25,6 +25,9 @@
 /// @author albert.kasdorf@live.de
 /// ----------------------------------------------------------------------------
 
+#include "program.hpp"
+#include "shader.hpp"
+
 #define GLAD_GL_IMPLEMENTATION
 #include "glad/glad.h"
 #define GLFW_INCLUDE_NONE
@@ -39,6 +42,7 @@
 #include <fstream>
 #include <filesystem>
 #include <iterator>
+#include <sstream>
 
 // Window dimensions
 
@@ -58,7 +62,7 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 }
 
 /// @brief Function to process input (e.g., escape key to close the window)
-/// @param window 
+/// @param window
 void processInput(GLFWwindow* window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -68,14 +72,14 @@ void processInput(GLFWwindow* window)
 }
 
 /// @brief OpenGL debug callback function
-/// @param source 
-/// @param type 
-/// @param id 
-/// @param severity 
-/// @param length 
-/// @param message 
-/// @param userParam 
-/// @return 
+/// @param source
+/// @param type
+/// @param id
+/// @param severity
+/// @param length
+/// @param message
+/// @param userParam
+/// @return
 void GLAPIENTRY debugCallback(
     GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
     GLchar const * message, void const * userParam)
@@ -86,58 +90,32 @@ void GLAPIENTRY debugCallback(
 }
 
 /// @brief
-/// @param type
-/// @param source
+/// @param vertexShader
+/// @param fragmentShader
 /// @return
-GLuint compileShader(GLenum type, std::string const & source)
+Program createShader(
+    std::string const & vertexShaderSource,
+    std::string const & fragmentShaderSource)
 {
-    GLuint const   shaderId{glCreateShader(type)};
-    GLchar const * c_str = source.c_str( );
-    glShaderSource(shaderId, 1, &c_str, nullptr);
-    glCompileShader(shaderId);
+    Shader vertexShader{EShaderType::Vertex};
+    vertexShader.compile(vertexShaderSource);
 
-    GLint result{ };
-    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
-    if(GL_FALSE == result)
-    {
-        GLint logLength{ };
-        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
-        std::string message{ };
-        message.resize(logLength);
-        glGetShaderInfoLog(shaderId, logLength, &logLength, message.data( ));
-        std::cerr << message;
-    }
+    Shader fragmentShader{EShaderType::Fragment};
+    fragmentShader.compile(fragmentShaderSource);
 
-    return shaderId;
+    Program program{ };
+    program.attachShader(vertexShader);
+    program.attachShader(fragmentShader);
+    program.link( );
+
+    return program;
 }
 
-/// @brief 
-/// @param vertexShader 
-/// @param fragmentShader 
-/// @return 
-GLuint createShader(
-    std::string const & vertexShader, std::string const & fragmentShader)
-{
-    GLuint const programId{glCreateProgram( )};
-    GLuint const vertexShaderId{compileShader(GL_VERTEX_SHADER, vertexShader)};
-    GLuint const fragmentShaderId{
-        compileShader(GL_FRAGMENT_SHADER, fragmentShader)};
-
-    glAttachShader(programId, vertexShaderId);
-    glAttachShader(programId, fragmentShaderId);
-    glLinkProgram(programId);
-    glValidateProgram(programId);
-    glDeleteShader(vertexShaderId);
-    glDeleteShader(fragmentShaderId);
-
-    return programId;
-}
-
-/// @brief 
-/// @param vertexShaderPath 
-/// @param fragmentShaderPath 
-/// @return 
-GLuint createShader(
+/// @brief
+/// @param vertexShaderPath
+/// @param fragmentShaderPath
+/// @return
+Program createShader(
     std::filesystem::path const & vertexShaderPath,
     std::filesystem::path const & fragmentShaderPath)
 {
@@ -154,10 +132,49 @@ GLuint createShader(
     return createShader(vertexShader, fragmentShader);
 }
 
-/// @brief 
-/// @param argc 
-/// @param argv 
-/// @return 
+/// @brief
+/// @param shaderPath
+/// @return
+Program createShader(std::filesystem::path const & shaderPath)
+{
+    enum class EShaderType : std::uint8_t
+    {
+        Vertex   = 0,
+        Fragment = 1,
+    };
+
+    std::ifstream                    shaderFile(shaderPath);
+    std::string                      line{ };
+    EShaderType                      shaderType{ };
+    std::array<std::stringstream, 2> shaderTexts{ };
+
+    while(std::getline(shaderFile, line))
+    {
+        if(std::string::npos != line.find("// shader vertex"))
+        {
+            shaderType = EShaderType::Vertex;
+            continue;
+        }
+        if(std::string::npos != line.find("// shader fragment"))
+        {
+            shaderType = EShaderType::Fragment;
+            continue;
+        }
+
+        std::stringstream& shaderText =
+            shaderTexts.at(static_cast<size_t>(shaderType));
+        shaderText << line << '\n';
+    }
+
+    return createShader(
+        shaderTexts.at(static_cast<size_t>(EShaderType::Vertex)).str( ),
+        shaderTexts.at(static_cast<size_t>(EShaderType::Fragment)).str( ));
+}
+
+/// @brief
+/// @param argc
+/// @param argv
+/// @return
 auto main(int argc, char** argv) -> int
 {
     int glfwIsInitialized{GLFW_FALSE};
@@ -205,8 +222,8 @@ auto main(int argc, char** argv) -> int
 #endif
 
         // Set viewport size and register resize callback
-        // glViewport(0, 0, k_screenWidth, k_screenHeight);
-        // glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+        glViewport(0, 0, k_screenWidth, k_screenHeight);
+        glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
         //----
         std::array<GLfloat, 6> positions{-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f};
@@ -226,10 +243,12 @@ auto main(int argc, char** argv) -> int
         glVertexAttribPointer(
             0, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
 
-        GLuint programId{createShader(
-            std::filesystem::path{"assets/shader/simple.vs"},
-            std::filesystem::path{"assets/shader/simple.fs"})};
-        glUseProgram(programId);
+        // GLuint programId{createShader(
+        //     std::filesystem::path{"assets/shader/simple.vs"},
+        //     std::filesystem::path{"assets/shader/simple.fs"})};
+        Program const program{
+            createShader(std::filesystem::path{"assets/shader/simple.shader"})};
+        glUseProgram(program.getId( ));
 
         // Main rendering loop
         while(!glfwWindowShouldClose(window))

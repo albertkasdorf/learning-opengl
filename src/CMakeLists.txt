@@ -3,7 +3,13 @@ set(
     TARGET_NAME learn-opengl
 )
 add_executable(
-    ${TARGET_NAME} main.cpp
+    ${TARGET_NAME}
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/program.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/program.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/shader.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/shaderType.hpp
 )
 set_target_properties(
     ${TARGET_NAME}
