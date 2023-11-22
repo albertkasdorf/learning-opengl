@@ -34,10 +34,19 @@
 Program::Program( )
 {
     m_programId = glCreateProgram( );
+    if(0 == m_programId)
+    {
+        throw std::runtime_error("glCreateProgram returned zero.");
+    }
 }
 
 Program::~Program( )
 {
+    if(0 == m_programId)
+    {
+        return;
+    }
+
     glDeleteProgram(m_programId);
 }
 
@@ -51,7 +60,10 @@ Program& Program::operator=(Program&& other)
     if(this != &other)
     {
         // Cleanup existing resources.
-        glDeleteProgram(m_programId);
+        if(0 != m_programId)
+        {
+            glDeleteProgram(m_programId);
+        }
 
         // Copy the data from source to destination.
         m_programId       = other.m_programId;

@@ -34,10 +34,19 @@
 Shader::Shader(EShaderType const shaderType)
 {
     m_shaderId = glCreateShader(static_cast<GLenum>(shaderType));
+    if(0 == m_shaderId)
+    {
+        throw std::runtime_error("glCreateShader returned zero.");
+    }
 }
 
 Shader::~Shader( )
 {
+    if(0 == m_shaderId)
+    {
+        return;
+    }
+
     glDeleteShader(m_shaderId);
 }
 
@@ -51,7 +60,10 @@ Shader& Shader::operator=(Shader&& other)
     if(this != &other)
     {
         // Cleanup existing resources.
-        glDeleteShader(m_shaderId);
+        if(0 != m_shaderId)
+        {
+            glDeleteShader(m_shaderId);
+        }
 
         // Copy the data from source to destination.
         m_shaderId       = other.m_shaderId;
@@ -83,7 +95,7 @@ auto Shader::compile(std::string const & source) -> void
         std::string message{ };
         message.resize(logLength);
         glGetShaderInfoLog(m_shaderId, logLength, &logLength, message.data( ));
-        
+
         throw std::runtime_error(message);
     }
 }
