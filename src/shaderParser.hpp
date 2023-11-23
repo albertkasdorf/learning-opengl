@@ -27,30 +27,20 @@
 
 #pragma once
 
-#include "shaderType.hpp"
-
-#include "glad/glad.h"
-
 #include <string>
+#include <filesystem>
 
-class CShader
+class CShaderParser
 {
 public:
-    CShader( ) = default;
-    ~CShader( );
+    auto parse(std::filesystem::path const & shaderFilePath) -> void;
 
-    CShader(CShader const & other)            = delete;
-    CShader& operator=(CShader const & other) = delete;
-
-    CShader(CShader&& other);
-    CShader& operator=(CShader&& other);
-
-public:
-    auto create(EShaderType const shaderType, std::string const & source) -> void;
-    auto destroy( ) -> void;
-
-    auto getId( ) const -> GLuint;
+    auto getShaderFilePath( ) const -> std::filesystem::path;
+    auto getVertexShaderSource( ) const -> std::string;
+    auto getFragmentShaderSource( ) const -> std::string;
 
 private:
-    GLuint m_shaderId{ };
+    std::filesystem::path m_shaderFilePath{ };
+    std::string           m_vertexShaderSource{ };
+    std::string           m_fragmentShaderSource{ };
 };

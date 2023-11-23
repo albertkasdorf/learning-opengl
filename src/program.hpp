@@ -27,30 +27,36 @@
 
 #pragma once
 
-#include "shader.hpp"
-
-#define GLAD_GL_IMPLEMENTATION
 #include "glad/glad.h"
 
-class Program
+#include <unordered_map>
+#include <string>
+#include <filesystem>
+
+class CProgram
 {
 public:
-    explicit Program( );
-    ~Program( );
+    explicit CProgram( );
+    ~CProgram( );
 
-    Program(Program const & other)            = delete;
-    Program& operator=(Program const & other) = delete;
+    CProgram(CProgram const & other)            = delete;
+    CProgram& operator=(CProgram const & other) = delete;
 
-    Program(Program&& other);
-    Program& operator=(Program&& other);
+    CProgram(CProgram&& other);
+    CProgram& operator=(CProgram&& other);
 
 public:
+    auto create(std::filesystem::path const & shaderFilePath) -> void;
+    auto destroy( ) -> void;
+
     auto getId( ) const -> GLuint;
 
-    auto attachShader(Shader const & shader) -> void;
+    auto use( ) const -> void;
 
-    auto link( ) -> void;
+    auto setUniform(std::string const & name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) -> void;
+    auto getUniformLocation(std::string const & name) -> GLint;
 
 private:
-    GLuint m_programId{ };
+    GLuint                                 m_programId{ };
+    std::unordered_map<std::string, GLint> m_uniformLocationCache{ };
 };

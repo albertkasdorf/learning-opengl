@@ -26,21 +26,67 @@
 /// ----------------------------------------------------------------------------
 
 #include "shader.hpp"
+#include "error.hpp"
 
 #include <utility>
 #include <stdexcept>
 #include <string>
 
-Shader::Shader(EShaderType const shaderType)
+CShader::~CShader( )
 {
-    m_shaderId = glCreateShader(static_cast<GLenum>(shaderType));
+    destroy( );
+}
+
+CShader::CShader(CShader&& other)
+{
+    *this = std::move(other);
+}
+
+CShader& CShader::operator=(CShader&& other)
+{
+    if(this != &other)
+    {
+        destroy( );
+        m_shaderId = std::exchange(other.m_shaderId, { });
+    }
+    return *this;
+}
+
+auto CShader::getId( ) const -> GLuint
+{
+    return m_shaderId;
+}
+
+auto CShader::create(EShaderType const shaderType, std::string const & source) -> void
+{
+    destroy( );
+
+    GLCheck(m_shaderId = glCreateShader(static_cast<GLenum>(shaderType)));
     if(0 == m_shaderId)
     {
         throw std::runtime_error("glCreateShader returned zero.");
     }
+
+    GLchar const * c_str = source.c_str( );
+    GLCheck(glShaderSource(m_shaderId, 1, &c_str, nullptr));
+    GLCheck(glCompileShader(m_shaderId));
+
+    GLint result{ };
+    GLCheck(glGetShaderiv(m_shaderId, GL_COMPILE_STATUS, &result));
+    if(GL_FALSE == result)
+    {
+        GLint logLength{ };
+        GLCheck(glGetShaderiv(m_shaderId, GL_INFO_LOG_LENGTH, &logLength));
+
+        std::string message{ };
+        message.resize(logLength);
+        GLCheck(glGetShaderInfoLog(m_shaderId, logLength, &logLength, message.data( )));
+
+        throw std::runtime_error(message);
+    }
 }
 
-Shader::~Shader( )
+auto CShader::destroy( ) -> void
 {
     if(0 == m_shaderId)
     {
@@ -48,54 +94,5 @@ Shader::~Shader( )
     }
 
     glDeleteShader(m_shaderId);
-}
-
-Shader::Shader(Shader&& other)
-{
-    *this = std::move(other);
-}
-
-Shader& Shader::operator=(Shader&& other)
-{
-    if(this != &other)
-    {
-        // Cleanup existing resources.
-        if(0 != m_shaderId)
-        {
-            glDeleteShader(m_shaderId);
-        }
-
-        // Copy the data from source to destination.
-        m_shaderId       = other.m_shaderId;
-
-        // Cleanup the data from the source.
-        other.m_shaderId = 0;
-    }
-    return *this;
-}
-
-auto Shader::getId( ) const -> GLuint
-{
-    return m_shaderId;
-}
-
-auto Shader::compile(std::string const & source) -> void
-{
-    GLchar const * c_str = source.c_str( );
-    glShaderSource(m_shaderId, 1, &c_str, nullptr);
-    glCompileShader(m_shaderId);
-
-    GLint result{ };
-    glGetShaderiv(m_shaderId, GL_COMPILE_STATUS, &result);
-    if(GL_FALSE == result)
-    {
-        GLint logLength{ };
-        glGetShaderiv(m_shaderId, GL_INFO_LOG_LENGTH, &logLength);
-
-        std::string message{ };
-        message.resize(logLength);
-        glGetShaderInfoLog(m_shaderId, logLength, &logLength, message.data( ));
-
-        throw std::runtime_error(message);
-    }
+    m_shaderId = { };
 }

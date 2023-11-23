@@ -4,11 +4,15 @@ set(
 )
 add_executable(
     ${TARGET_NAME}
+    ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/error.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/program.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/program.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shader.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/shaderParser.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/shaderParser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shaderType.hpp
 )
 set_target_properties(
@@ -26,9 +30,33 @@ set_target_properties(
         LINK_FLAGS "/ignore:4098"
 )
 endif()
+target_compile_options(
+    ${TARGET_NAME}
+    PRIVATE
+        #
+        # Compiler options listed by category
+        # https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
+        # https://github.com/cpp-best-practices/cmake_template/blob/main/cmake/CompilerWarnings.cmake
+        #
+        $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+)
 target_compile_features(
     ${TARGET_NAME} PRIVATE cxx_std_17
 )
+target_compile_definitions(
+    ${TARGET_NAME}
+    PRIVATE
+        GLAD_GL_IMPLEMENTATION
+        GLFW_INCLUDE_NONE
+)
+#
+# Cross Compiling With CMake, https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html
+#
+if(CMAKE_HOST_WIN32)
+    target_compile_definitions(${TARGET_NAME} PRIVATE LEARNOGL_OPENGL_MAJOR=4 LEARNOGL_OPENGL_MINOR=3)
+elseif(CMAKE_HOST_APPLE)
+    target_compile_definitions(${TARGET_NAME} PRIVATE LEARNOGL_OPENGL_MAJOR=4 LEARNOGL_OPENGL_MINOR=1)
+endif()
 target_link_libraries(
     ${TARGET_NAME}
     PRIVATE

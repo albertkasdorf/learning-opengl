@@ -27,7 +27,6 @@
 
 #pragma once
 
-#define GLAD_GL_IMPLEMENTATION
 #include "glad/glad.h"
 
 enum class EShaderType : GLenum

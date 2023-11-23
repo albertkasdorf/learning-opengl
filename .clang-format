@@ -50,7 +50,7 @@ AlwaysBreakTemplateDeclarations: Yes
 #   - __capability
 
 BinPackArguments: true
-BinPackParameters: true
+BinPackParameters: false
 BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel: true
@@ -83,7 +83,7 @@ BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 
-ColumnLimit: 80
+ColumnLimit: 120
 # CommentPragmas:
 CompactNamespaces: false
 ConstructorInitializerIndentWidth: 4
@@ -135,7 +135,7 @@ NamespaceIndentation: None
 
 PPIndentWidth: 0
 PackConstructorInitializers: Never
-# PenaltyBreakAssignment:
+# PenaltyBreakAssignment: 1000
 # PenaltyBreakBeforeFirstCallParameter:
 # PenaltyBreakComment:
 # PenaltyBreakFirstLessLess:

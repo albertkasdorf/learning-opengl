@@ -27,30 +27,31 @@
 
 #pragma once
 
-#include "shaderType.hpp"
-
 #include "glad/glad.h"
 
-#include <string>
+#define GLCheck(x)                                                                                                     \
+CError::clear( );                                                                                                      \
+x;                                                                                                                     \
+CError::report(#x, __FILE__, __LINE__);
 
-class CShader
+class CError
 {
 public:
-    CShader( ) = default;
-    ~CShader( );
-
-    CShader(CShader const & other)            = delete;
-    CShader& operator=(CShader const & other) = delete;
-
-    CShader(CShader&& other);
-    CShader& operator=(CShader&& other);
+    CError( ) = delete;
 
 public:
-    auto create(EShaderType const shaderType, std::string const & source) -> void;
-    auto destroy( ) -> void;
+    static auto            clear( ) -> void;
 
-    auto getId( ) const -> GLuint;
+    static auto            report(char const * function, char const * file, int const line) -> void;
 
-private:
-    GLuint m_shaderId{ };
+    static auto            enableDebugOutput(void const * userParam = nullptr) -> void;
+
+    static auto GLAPIENTRY debugMessageCallback(
+        GLenum         source,
+        GLenum         type,
+        GLuint         id,
+        GLenum         severity,
+        GLsizei        length,
+        GLchar const * message,
+        void const *   userParam) -> void;
 };
