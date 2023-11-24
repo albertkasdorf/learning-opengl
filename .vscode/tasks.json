@@ -12,11 +12,19 @@
             //
             "label": "Open Doxygen documentation",
             "type": "process",
-            "command": "rundll32.exe",
-            "args": [
-                "url.dll,FileProtocolHandler",
-                "${command:cmake.buildDirectory}/docs/html/index.html"
-            ],
+            "windows": {
+                "command": "rundll32.exe",
+                "args": [
+                    "url.dll,FileProtocolHandler",
+                    "${command:cmake.buildDirectory}/docs/html/index.html"
+                ],
+            },
+            "linux": {
+                "command": "firefox",
+                "args": [
+                    "${command:cmake.buildDirectory}/docs/html/index.html",
+                ],
+            },
             "problemMatcher": [],
             "presentation": {
                 "echo": true,
@@ -38,7 +46,12 @@
             //
             "label": "Build Doxygen documentation",
             "type": "process",
-            "command": "C:/Program Files/CMake/bin/cmake.exe",
+            "windows": {
+                "command": "C:/Program Files/CMake/bin/cmake.exe",
+            },
+            "linux": {
+                "command": "cmake"
+            },
             "args": [
                 "--build",
                 "--preset",
