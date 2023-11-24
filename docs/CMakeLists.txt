@@ -1,5 +1,5 @@
 # check if Doxygen is installed
-find_package(Doxygen 1.9.5)
+find_package(Doxygen 1.9)
 if (DOXYGEN_FOUND)
 
     # Populates the doxygen-awesome-css_SOURCE_DIR variable.

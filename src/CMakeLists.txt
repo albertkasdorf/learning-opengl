@@ -68,6 +68,8 @@ target_compile_definitions(
 #
 if(CMAKE_HOST_WIN32)
     target_compile_definitions(${TARGET_NAME} PRIVATE LEARNOGL_OPENGL_MAJOR=4 LEARNOGL_OPENGL_MINOR=3)
+elseif(CMAKE_HOST_LINUX)
+    target_compile_definitions(${TARGET_NAME} PRIVATE LEARNOGL_OPENGL_MAJOR=4 LEARNOGL_OPENGL_MINOR=3)
 elseif(CMAKE_HOST_APPLE)
     target_compile_definitions(${TARGET_NAME} PRIVATE LEARNOGL_OPENGL_MAJOR=4 LEARNOGL_OPENGL_MINOR=1)
 endif()

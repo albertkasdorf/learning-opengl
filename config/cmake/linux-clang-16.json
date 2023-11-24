@@ -1,0 +1,34 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "linux-clang-16",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-16",
+                "CMAKE_CXX_COMPILER": "clang++-16",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "FETCHCONTENT_QUIET": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "linux-clang-16-Debug",
+            "configurePreset": "linux-clang-16",
+            "configuration": "Debug"
+        },
+        {
+            "name": "linux-clang-16-Release",
+            "configurePreset": "linux-clang-16",
+            "configuration": "Release"
+        }
+    ]
+}

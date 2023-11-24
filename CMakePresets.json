@@ -8,6 +8,8 @@
     "include": [
         "config/cmake/win32-msvc-2022.json",
         "config/cmake/win32-clang-16.json",
-        "config/cmake/osx-clang-15.json"
+        "config/cmake/osx-clang-15.json",
+        "config/cmake/linux-clang-16.json",
+        "config/cmake/linux-gcc-13.json"
     ]
 }

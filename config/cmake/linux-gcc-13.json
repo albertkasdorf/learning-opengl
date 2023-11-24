@@ -1,0 +1,34 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "linux-gcc-13",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc-13",
+                "CMAKE_CXX_COMPILER": "g++-13",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "FETCHCONTENT_QUIET": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "linux-gcc-13-Debug",
+            "configurePreset": "linux-gcc-13",
+            "configuration": "Debug"
+        },
+        {
+            "name": "linux-gcc-13-Release",
+            "configurePreset": "linux-gcc-13",
+            "configuration": "Release"
+        }
+    ]
+}
