@@ -66,9 +66,14 @@ auto CProgram::getId( ) const -> GLuint
     return m_programId;
 }
 
-auto CProgram::use( ) const -> void
+auto CProgram::bind( ) const -> void
 {
     GLCheck(glUseProgram(m_programId));
+}
+
+auto CProgram::unbind( ) const -> void
+{
+    GLCheck(glUseProgram(0));
 }
 
 auto CProgram::setUniform(std::string const & name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) -> void

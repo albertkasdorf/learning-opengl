@@ -73,8 +73,8 @@ auto CError::report(char const * function, char const * file, int const line) ->
 auto CError::enableDebugOutput(void const * userParam) -> void
 {
 #ifndef __APPLE__
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(&CError::debugMessageCallback, userParam);
+    GLCheck(glEnable(GL_DEBUG_OUTPUT));
+    GLCheck(glDebugMessageCallback(&CError::debugMessageCallback, userParam));
 #endif
 }
 

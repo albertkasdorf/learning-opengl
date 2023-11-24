@@ -2,11 +2,12 @@
 #version 330 core
 
 layout(location = 0) in vec4 position;
+layout(location = 1) in float pointSize;
 
 void main()
 {
     gl_Position = position;
-    gl_PointSize = 10.0;
+    gl_PointSize = pointSize;
 }
 
 // shader fragment

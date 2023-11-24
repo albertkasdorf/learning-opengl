@@ -28,6 +28,11 @@
 #include "program.hpp"
 #include "shader.hpp"
 #include "error.hpp"
+#include "indexBuffer.hpp"
+#include "vertexBuffer.hpp"
+#include "vertexArray.hpp"
+#include "vertexBufferLayout.hpp"
+#include "stateVariables.hpp"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -40,24 +45,14 @@
 #include <filesystem>
 
 // Window dimensions
-
-/// @brief Width of the window
 unsigned int const k_screenWidth{800};
-
-/// @brief Height of the window
 unsigned int const k_screenHeight{600};
 
-/// @brief Function called when the window is resized
-/// @param window Window handle
-/// @param width Window width
-/// @param height Window height
 void               framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    GLCheck(glViewport(0, 0, width, height));
 }
 
-/// @brief Function to process input (e.g., escape key to close the window)
-/// @param window
 void processInput(GLFWwindow* window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -66,10 +61,31 @@ void processInput(GLFWwindow* window)
     }
 }
 
-/// @brief
-/// @param argc
-/// @param argv
-/// @return
+auto printStateVariables( ) -> void
+{
+    CStateVariables::printInteger(GL_MAJOR_VERSION);
+    CStateVariables::printInteger(GL_MINOR_VERSION);
+    CStateVariables::printString(GL_VENDOR);
+    CStateVariables::printString(GL_RENDERER);
+    CStateVariables::printString(GL_VERSION);
+    CStateVariables::printString(GL_SHADING_LANGUAGE_VERSION);
+
+    CStateVariables::printInteger(GL_MAX_VERTEX_ATTRIBS);
+    CStateVariables::printInteger64(GL_MAX_ELEMENTS_VERTICES);
+    CStateVariables::printInteger64(GL_MAX_ELEMENTS_INDICES);
+    CStateVariables::printInteger(GL_MAX_DRAW_BUFFERS);
+    CStateVariables::printInteger64(GL_MAX_TEXTURE_BUFFER_SIZE);
+    CStateVariables::printInteger(GL_MAX_TEXTURE_IMAGE_UNITS);
+    CStateVariables::printInteger(GL_MAX_TEXTURE_SIZE);
+    CStateVariables::printInteger(GL_MAX_UNIFORM_LOCATIONS);
+    CStateVariables::printInteger64(GL_MAX_ELEMENT_INDEX);
+
+    CStateVariables::printPointSizeRange( );
+
+    CStateVariables::printInteger(GL_NUM_EXTENSIONS);
+    // CStateVariables::printExtensions( );
+}
+
 auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
 {
     int glfwIsInitialized{GLFW_FALSE};
@@ -87,8 +103,14 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
         // Configure GLFW
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, LEARNOGL_OPENGL_MAJOR);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, LEARNOGL_OPENGL_MINOR);
-        // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        // Specifies which OpenGL profile to create the context for.
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Specifies whether the OpenGL context should be forward-compatible, i.e. one where all functionality
+        // deprecated in the requested version of OpenGL is removed.
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        // Specifies whether the context should be created in debug mode, which may provide additional error and
+        // diagnostic reporting functionality.
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
         // Create a window object
         GLFWwindow* window{glfwCreateWindow(k_screenWidth, k_screenHeight, "GLFW Example", nullptr, nullptr)};
@@ -103,58 +125,77 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
         {
             throw std::runtime_error("Failed to initialize GLAD.");
         }
-        std::cout << GLVersion.major << " " << GLVersion.minor << "\n";
 
         // Enable OpenGL debug output
         CError::enableDebugOutput( );
 
-        GLint maxVertexAttribs{ };
-        GLCheck(glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribs));
-        std::cout << fmt::format("GL_MAX_VERTEX_ATTRIBS: {}\n", maxVertexAttribs);
-
-        GLint majorVersion{ };
-        GLint minorVersion{ };
-        GLCheck(glGetIntegerv(GL_MAJOR_VERSION, &majorVersion));
-        GLCheck(glGetIntegerv(GL_MINOR_VERSION, &minorVersion));
-        std::cout << fmt::format("GL_MAJOR_VERSION, GL_MINOR_VERSION: {}.{}\n", majorVersion, minorVersion);
+        printStateVariables( );
 
         // Set viewport size and register resize callback
-        glViewport(0, 0, k_screenWidth, k_screenHeight);
+        GLCheck(glViewport(0, 0, k_screenWidth, k_screenHeight));
         glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
         // ???
         // glfwSwapInterval
 
         //----
-        std::array<GLfloat, 6> positions{
+        std::array<GLfloat, 9> positions{
             // clang-format off
             -0.5f, -0.5f,
-            0.0f, 0.5f,
-            0.5f, -0.5f
-            // clang-format om
+             0.0f,  0.5f,
+             0.5f, -0.5f,
+            // clang-format on
         };
-        std::array<GLuint, 3>  indicies{
+        std::array<GLfloat, 3> pointSizes{
+            // clang-format off
+            10.0F, 5.0F, 25.0F
+            // clang-format on
+        };
+        std::array<GLuint, 3> indicies{
             // clang-format off
             0, 1, 2
             // clang-format on
         };
-        GLuint vbo{ };
-        GLuint vao{ };
-        GLuint ibo{ };
 
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+        struct CVertex
+        {
+            GLfloat m_x{ };
+            GLfloat m_y{ };
+            GLuint  m_ptSize{ };
+        };
 
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, positions.size( ) * sizeof(GLfloat), positions.data( ), GL_STATIC_DRAW);
+        std::array<CVertex, 3> vertices{
+            {{-0.6f, -0.6f, 10}, {0.0f, 0.6f, 5}, {0.6f, -0.6f, 25}}
+        };
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
+        CVertexBuffer vbo{ };
+        vbo.create(positions.data( ), sizeof(GLfloat), positions.size( ));
 
-        glGenBuffers(1, &ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size( ) * sizeof(GLuint), indicies.data( ), GL_STATIC_DRAW);
+        CVertexBufferLayout vboLayout{ };
+        vboLayout.addFloat(EVertexAttributeIndex::Zero, ENumberOfComponents::Two);
+
+        CVertexBuffer vbPointSizes{ };
+        vbPointSizes.create(pointSizes.data( ), sizeof(GLfloat), pointSizes.size( ));
+
+        CVertexBufferLayout vbPointSizesLayout{ };
+        vbPointSizesLayout.addFloat(EVertexAttributeIndex::One, ENumberOfComponents::One);
+
+        CVertexBuffer vbVertices{ };
+        vbVertices.create(vertices.data( ), sizeof(CVertex), vertices.size( ));
+
+        CVertexBufferLayout vbVerticesLayout{ };
+        vbVerticesLayout.addFloat(EVertexAttributeIndex::Zero, ENumberOfComponents::Two);
+        vbVerticesLayout.addUInt(EVertexAttributeIndex::One, ENumberOfComponents::One);
+
+        CIndexBuffer ibo{ };
+        ibo.create(indicies.data( ), indicies.size( ));
+
+        CVertexArray vao{ };
+        vao.create( );
+        vao.addVertexBuffer(vbo, vboLayout);
+        vao.addVertexBuffer(vbPointSizes, vbPointSizesLayout);
+        // vao.addVertexBuffer(vbVertices, vbVerticesLayout);
+        vao.addIndexBuffer(ibo);
 
         CProgram program{ };
         program.create(std::filesystem::path{"assets/shader/simple.shader"});
@@ -171,16 +212,26 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
             GLCheck(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
             GLCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-            // glDrawArrays(GL_LINE_LOOP, 0, 3);
-            // glDrawArrays(GL_TRIANGLES, 0, 3);
+            vao.bind( );
+            program.bind( );
 
-            program.use( );
+            program.setUniform("u_color", 1.0F, 0.0F, 0.0F, 1.0F);
+            GLCheck(glDrawArrays(GL_TRIANGLES, 0, 3));
 
-            program.setUniform("u_color", 0.2F, 0.3F, 0.8F, 1.0F);
-            GLCheck(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indicies.size( )), GL_UNSIGNED_INT, nullptr));
+            program.setUniform("u_color", 0.0F, 1.0F, 0.0F, 1.0F);
+            GLCheck(glDrawArrays(GL_LINE_LOOP, 0, 3));
 
-            program.setUniform("u_color", 0.8F, 0.3F, 0.8F, 1.0F);
-            GLCheck(glDrawElements(GL_POINTS, static_cast<GLsizei>(indicies.size( )), GL_UNSIGNED_INT, nullptr));
+            program.setUniform("u_color", 1.0F, 1.0F, 1.0F, 1.0F);
+            GLCheck(glDrawArrays(GL_POINTS, 0, 3));
+
+            // program.setUniform("u_color", 0.2F, 0.3F, 0.8F, 1.0F);
+            // GLCheck(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indicies.size( )), GL_UNSIGNED_INT, nullptr));
+
+            // program.setUniform("u_color", 0.8F, 0.3F, 0.8F, 1.0F);
+            // GLCheck(glDrawElements(GL_POINTS, static_cast<GLsizei>(indicies.size( )), GL_UNSIGNED_INT, nullptr));
+
+            program.unbind( );
+            vao.unbind( );
 
             // Swap the buffers and poll IO events
             glfwSwapBuffers(window);

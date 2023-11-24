@@ -4,9 +4,13 @@ set(
 )
 add_executable(
     ${TARGET_NAME}
+    ${CMAKE_CURRENT_SOURCE_DIR}/bufferUsagePattern.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/error.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/indexBuffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/indexBuffer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/numberOfComponents.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/program.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/program.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
@@ -14,6 +18,16 @@ add_executable(
     ${CMAKE_CURRENT_SOURCE_DIR}/shaderParser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shaderParser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shaderType.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/stateVariables.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/stateVariables.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexArray.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexArray.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexAttributeIndex.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexBuffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexBuffer.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexBufferElement.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexBufferLayout.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vertexBufferLayout.hpp
 )
 set_target_properties(
     ${TARGET_NAME}

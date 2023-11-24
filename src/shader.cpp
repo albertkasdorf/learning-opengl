@@ -93,6 +93,6 @@ auto CShader::destroy( ) -> void
         return;
     }
 
-    glDeleteShader(m_shaderId);
+    GLCheck(glDeleteShader(m_shaderId));
     m_shaderId = { };
 }

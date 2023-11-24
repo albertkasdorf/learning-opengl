@@ -36,7 +36,7 @@
 class CProgram
 {
 public:
-    explicit CProgram( );
+    CProgram( );
     ~CProgram( );
 
     CProgram(CProgram const & other)            = delete;
@@ -51,7 +51,8 @@ public:
 
     auto getId( ) const -> GLuint;
 
-    auto use( ) const -> void;
+    auto bind( ) const -> void;
+    auto unbind( ) const -> void;
 
     auto setUniform(std::string const & name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) -> void;
     auto getUniformLocation(std::string const & name) -> GLint;
