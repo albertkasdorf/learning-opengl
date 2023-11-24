@@ -77,8 +77,11 @@ auto printStateVariables( ) -> void
     CStateVariables::printInteger64(GL_MAX_TEXTURE_BUFFER_SIZE);
     CStateVariables::printInteger(GL_MAX_TEXTURE_IMAGE_UNITS);
     CStateVariables::printInteger(GL_MAX_TEXTURE_SIZE);
+#ifdef __APPLE__
+#else
     CStateVariables::printInteger(GL_MAX_UNIFORM_LOCATIONS);
     CStateVariables::printInteger64(GL_MAX_ELEMENT_INDEX);
+#endif
 
     CStateVariables::printPointSizeRange( );
 
@@ -198,7 +201,9 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
         vao.addIndexBuffer(ibo);
 
         CProgram program{ };
+        vao.bind();
         program.create(std::filesystem::path{"assets/shader/simple.shader"});
+        vao.unbind();
 
         GLCheck(glEnable(GL_PROGRAM_POINT_SIZE));
 
