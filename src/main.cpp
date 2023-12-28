@@ -87,6 +87,16 @@ auto printStateVariables( ) -> void
 
     CStateVariables::printInteger(GL_NUM_EXTENSIONS);
     // CStateVariables::printExtensions( );
+
+    CStateVariables::printInteger(GL_MAX_VERTEX_UNIFORM_COMPONENTS);
+    CStateVariables::printInteger(GL_MAX_VERTEX_UNIFORM_VECTORS);
+    CStateVariables::printInteger(GL_MAX_VERTEX_UNIFORM_BLOCKS);
+
+    CStateVariables::printInteger(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS);
+    CStateVariables::printInteger(GL_MAX_FRAGMENT_UNIFORM_VECTORS);
+    CStateVariables::printInteger(GL_MAX_FRAGMENT_UNIFORM_BLOCKS);
+
+    return;
 }
 
 auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
